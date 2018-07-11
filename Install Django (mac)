@@ -1,0 +1,58 @@
+#Install App using Django
+
+#Just follow this!
+#https://scotch.io/tutorials/build-your-first-python-and-django-application
+
+brew install python3
+
+pip install argparse * optional
+pip install virtualenv
+mkdir tolsby**
+ls
+cd to **
+mkdir helllo
+virtualenv -p /usr/local/bin/python3 env
+source env/bin/activate
+source activate
+source deactivate
+pip install django
+django-admin startproject helloapp
+python manage.py runserver
+cd helloapp
+python manage.py startapp howdy
+python manage.py runserver
+
+#Go here (http://127.0.0.1:8000/)
+#Should be running!
+
+##---To rerun the server--##
+
+cd <project_folder>
+virtualenv -p /usr/local/bin/python3 env
+source env/bin/activate *your terminal should have (env) prefix
+cd helloapp/
+python manage.py runserver
+
+#Go to
+http://127.0.0.1:8000/
+
+#Changing admin username / password
+#In linux:
+#Install pip first
+
+sudo apt-get install python3-pip
+
+#Then install virtualenv using pip3
+sudo pip3 install virtualenv 
+
+#Now create a virtual environment
+virtualenv venv
+cd <project>
+source venv/bin/activate
+cd helloapp
+python3 manage.py runserver
+
+python3 manage.py migrate
+python3 manage.py createsuperuser
+
+#END#
