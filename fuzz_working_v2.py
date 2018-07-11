@@ -1,6 +1,9 @@
+#This code implements fuzzy text string matching from two different dataframes.
+#The assumption though is that two dframes must be of the same number of row. Otherwise, this will
+#return a misleading fuzzy string match at the diagonal matrix.
+
 import pandas as pd
-from fuzzywuzzy import fuzz
-from fuzzywuzzy import process
+from fuzzywuzzy import fuzz, process
 import numpy as np
 
 df1 = pd.read_excel(open('/Users/michael/Desktop/GE_pipeline/data.xlsx'), sheetname = 0)
@@ -28,6 +31,7 @@ a = lv1_match(df1,df2)
 b = pd.Series(np.diag(df3), index=[df3.index, df3.columns])
 print b
 
+#This part is not tested
 #idxmax = df3.idxmax(1)
 #df['PROD_ID'] = np.where(threshold, df2.loc[idxmax, 'PROD_ID'].values, np.nan)
 #df['PROD_DESCRIPTION'] = np.where(threshold, df2.loc[idxmax, 'PROD_DESCRIPTION'].values, np.nan)
