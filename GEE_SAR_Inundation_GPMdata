@@ -1,0 +1,78 @@
+//Map.addLayer(geometry);
+
+/// GPM BANDS
+//HQobservationTime
+//HQprecipSource
+//HQprecipitation
+//IRkalmanFilterWeitght
+//IRprecipitation
+//precipitationCal
+//precipitationUncal
+//probabilityLiquidPrecipitation
+
+var gpm_band = 'precipitationCal';
+
+var gpm = ee.ImageCollection('NASA/GPM_L3/IMERG_V05')
+          .filterDate('2018-07-01', '2018-07-23')
+          .select(gpm_band);
+          
+var display = gpm.mean().clip(geometry);
+
+Map.addLayer(
+  display,
+  {palette: '0000FF, FFFFFF',
+   opacity: 0.4},
+  'GPM data'
+);
+
+print(ui.Chart.image.series(gpm,geometry2, ee.Reducer.mean())
+    .setChartType('BarChart')
+    .setOptions({
+      title: 'Daily Precipitaion (in mm) based on: ' + gpm_band,
+      vAxis: {title: 'GPM Observation Dates'},
+      hAxis: {title: 'Observed Rainfall (milimeters)'}
+}));
+
+//__________________________SAR FLOOD (S1A)_______________________//
+// Load Sentinel-1 C-band SAR Ground Range collection (log scaling, VV co-polar)
+var collection = ee.ImageCollection('COPERNICUS/S1_GRD').filterBounds(geometry)
+.filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))
+.select('VV');
+
+// Filter by date
+var before = collection.filterDate('2018-07-07', '2018-07-09').mosaic().clip(geometry);
+var after = collection.filterDate('2018-07-19', '2018-07-21').mosaic().clip(geometry);
+
+// Threshold smoothed radar intensities to identify "flooded" areas.
+var SMOOTHING_RADIUS = 100;
+var DIFF_UPPER_THRESHOLD = -3;
+
+var diff_smoothed = after.focal_median(SMOOTHING_RADIUS, 'circle', 'meters')
+.subtract(before.focal_median(SMOOTHING_RADIUS, 'circle', 'meters'));
+
+var diff_thresholded = diff_smoothed.lt(DIFF_UPPER_THRESHOLD);
+
+//Layers
+Map.centerObject(geometry2,10);
+//---LAYERS---
+var srtm = ee.Image('USGS/SRTMGL1_003').clip(geometry);
+var slope = ee.Terrain.slope(srtm);
+var aspect = ee.Terrain.aspect(srtm);
+var hillshade = aspect.divide(360).multiply(Math.PI).sin();
+
+//Map.addLayer(geometry);
+//Map.addLayer(srtm, {min: 0, max: 3000}, 'custom visualization');
+//Map.addLayer(slope, {min: 0, max: 60}, 'custom visualization');
+//Map.addLayer(hillshade, {min: -1, max: 1}, 'sin');
+Map.addLayer(before, {min:-30,max:0}, 'Before flood');
+Map.addLayer(after, {min:-30,max:0}, 'After flood');
+//Map.addLayer(after.subtract(before), {min:-10,max:10}, 'After - before', 0);
+//Map.addLayer(diff_smoothed, {min:-10,max:10}, 'diff smoothed', 0);
+Map.addLayer(diff_thresholded.updateMask(diff_thresholded),
+{palette:"0000FF"},'flooded areas - blue',1);
+
+//Layers checkbox
+var checkbox = ui.Checkbox('Show layer', true);
+checkbox.onChange(function(checked) {
+  Map.layers().get(0).setShown(checked);
+});
