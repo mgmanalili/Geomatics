@@ -1,13 +1,6 @@
-Geoprocessing helpers
+## Geoprocessing helpers - personal collection
 
-
-```python
-for i in range(100):
-	print(i)
-```
-
-GDAL processing
-
+### GDAL processing
 
 ```
 gdalbuildvrt -separate -te xmin ymin xmax ymax -input_file_list /outdir/filelist.txt /outdir/outraster.vrt
@@ -43,7 +36,7 @@ gdalwarp -cutline /Users/michael/Desktop/gsw/adm0_d.shp -crop_to_cutline input.t
 gdaladdo INPUT.tif 2 4 8 16 32 64 128 256 1024 2048 -r average -ro --config COMPRESS_OVERVIEW LZW --config INTERLEAVE_OVERVIEW PIXEL
 ```
 
-google drive image hosting for ArcGIS online
+### Google drive image hosting for ArcGIS online
 
 1. upload image to gdrive
 2. make public
@@ -52,7 +45,7 @@ google drive image hosting for ArcGIS online
 https://drive.google.com/uc?export=view&id=1YaQu-s6wDnEdilnhvO8FIlFijOv-nAO5
 
 
-HRSL on AWS
+### HRSL on AWS
 
 gdal_translate /vsicurl/https://dataforgood-fb-data.s3.amazonaws.com/hrsl-cogs/hrsl_general/hrsl_general-latest.vrt drc_hrsl.tif -projwin 22.172286 1.020213 24.394043 -1.601171 -projwin_srs EPSG:4326
 
