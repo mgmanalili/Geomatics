@@ -38,19 +38,17 @@ gdaladdo INPUT.tif 2 4 8 16 32 64 128 256 1024 2048 -r average -ro --config COMP
 
 ### Google drive image hosting for ArcGIS online
 
-1. upload image to gdrive
-2. make public
-3. copy link
-4. follow format (get ID from the end point)
+- upload image to gdrive
+- make public
+- copy link
+- follow format (get ID from the end point)
 https://drive.google.com/uc?export=view&id=1YaQu-s6wDnEdilnhvO8FIlFijOv-nAO5
 
 
 ### HRSL on AWS
-
+```
 gdal_translate /vsicurl/https://dataforgood-fb-data.s3.amazonaws.com/hrsl-cogs/hrsl_general/hrsl_general-latest.vrt drc_hrsl.tif -projwin 22.172286 1.020213 24.394043 -1.601171 -projwin_srs EPSG:4326
-
-
-
+```
 min_lng max_lat max_lng min_lat
 
 
@@ -65,11 +63,7 @@ library(parallel)
 library(sf)
 library(raster)
 detectCores()
-v_tf <- read_sf('/Users/michael/Desktop/gsw/admo_buffer0.shp')
-r <- raster('/Users/michael/Desktop/gsw/out/mosaic_seas_jrc.tif')
 beginCluster(n=11)
-c <- crop(r, v_tf)
-m <- mask(c,v_tf)
-writeRaster(m, '/Users/michael/Desktop/gsw/out/mosaic_seas_jrc_clip.tif',overwrite=TRUE)
+task <-r_processing_here
 endCluster()
 ```
