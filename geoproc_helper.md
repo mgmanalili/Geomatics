@@ -67,3 +67,31 @@ beginCluster(n=11)
 task <-r_processing_here
 endCluster()
 ```
+
+### Mosaic multiple (>100) raster of different extents and overlapping bands
+
+```R
+library('raster')
+library(doParallel)
+library(foreach)
+library(parallel)
+detectCores()
+beginCluster(n=11)
+
+#List of files in local directory containing the binary images
+raster_list <- list.files('/dir/flood_rasters', full.names = TRUE)
+print(raster_list)
+#create an empty list
+rast.list <- list()
+#loop through the list as raster object not as file path
+for(i in 1:length(raster_list)) { rast.list[i] <- raster(raster_list[i]) }
+
+# Use do.call on the list of raster objects
+rast.list$fun <- sum #change operation here (min, mean, max)
+rast.mosaic <- do.call(mosaic,rast.list)
+
+# Write output raster to file
+writeRaster(rast.mosaic, '/dir/out_mosaic.tif', overwrite=TRUE)
+
+endCluster()
+```
